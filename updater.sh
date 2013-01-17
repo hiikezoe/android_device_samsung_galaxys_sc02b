@@ -180,6 +180,10 @@ elif /tmp/busybox test -e /dev/block/mtdblock0 ; then
             else
                 /tmp/busybox dd if=/tmp/modem.bin of=/radio/modem.bin bs=4096
             fi
+            if ! /tmp/busybox md5sum -s -c /tmp/modem.bin.md5sum ; then
+                /tmp/busybox echo "Failed to copy modem.bin to radio partition."
+                exit 5
+            fi
         fi
 
         # unmount radio partition
