@@ -36,3 +36,5 @@ include device/samsung/aries-common/BoardConfigCommon.mk
 
 TARGET_KERNEL_SOURCE := kernel/samsung/galaxys_sc02b
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/galaxys_sc02b/shbootimg.mk
+
+TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/galaxys_sc02b
