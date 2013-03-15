@@ -61,7 +61,7 @@ INSTALLED_KERNEL_TARGET := $(PRODUCT_OUT)/kernel
 include device/samsung/galaxys_sc02b/kernel.mk
 
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
-TARGET_RECOVERY_UI_LIB := librecovery_ui_galaxys_sc02b
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/galaxys_sc02b/recovery/keys.c
 TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/galaxys_sc02b
 
 BOARD_BOOTIMAGE_PARTITION_SIZE := 7864320
