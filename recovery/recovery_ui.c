@@ -62,6 +62,7 @@ int device_handle_key(int key_code, int visible) {
 
             case KEY_FN_F1:
             case KEY_ENTER:
+            case KEY_POWER:
                 return SELECT_ITEM;
         }
     }
