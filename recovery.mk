@@ -18,15 +18,17 @@ $(strip \
 endef
 endif
 
+TARGET_DEVICE_DIR := device/samsung/galaxys_sc02b
+
 recovery_initrc := $(call include-path-for, recovery)/etc/init.rc
 recovery_ramdisk := $(PRODUCT_OUT)/ramdisk-recovery.img
 recovery_build_prop := $(INSTALLED_BUILD_PROP_TARGET)
 recovery_binary := $(call intermediates-dir-for,EXECUTABLES,recovery)/recovery
 recovery_resources_common := $(call include-path-for, recovery)/res
-recovery_resources_private := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery/res))
+recovery_resources_private := $(TARGET_DEVICE_DIR)/recovery/res
 recovery_resource_deps := $(shell find $(recovery_resources_common) \
   $(recovery_resources_private) -type f)
-recovery_fstab := $(strip $(wildcard $(TARGET_DEVICE_DIR)/recovery.fstab))
+recovery_fstab := $(TARGET_DEVICE_DIR)/recovery.fstab
 
 $(recovery_ramdisk): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 		$(INSTALLED_RAMDISK_TARGET) \
