@@ -81,7 +81,6 @@
   <project path="ndk" name="platform/ndk" revision="2d77f5a05f60029c981f299b222cfe28db18ccf7"/>
   <project path="prebuilt" name="platform/prebuilt" revision="0e104261b6d33f87e9f86ff4249bcc0306ab278b"/>
   <project path="system/bluetooth" name="platform/system/bluetooth" revision="2588cd802f322650ed737dfb7a10e9ad94064e99"/>
-  <project path="system/core" name="platform/system/core" revision="c2db4ffb874783220abf967ca4ccd0e6cf1ba57f"/>
   <project path="system/extras" name="platform/system/extras" revision="fa351ab265957fa8815df3c4ca1f3c105f253e8b"/>
   <project path="system/media" name="platform/system/media" revision="a8eea50f80327f15cb04bbdfee2d1cfcc4c3ce4a"/>
   <project path="system/netd" name="platform/system/netd" revision="3c903b555975fa59d6688a0a6417ac7512c202e7"/>
@@ -94,6 +93,7 @@
   <project path="external/yaffs2" name="android_external_yaffs2" remote="cyanogenmod" revision="ics"/>
   <project path="external/openssl" name="android_external_openssl" remote="cyanogenmod" revision="ics"/>
   <project path="external/zlib" name="android_external_zlib" remote="cyanogenmod" revision="ics"/>
+  <project path="system/core" name="android_system_core" remote="cyanogenmod" revision="ics"/>
   <project path="bootable/recovery" name="android_bootable_recovery" remote="cyanogenmod" revision="ics"/>
 
 </manifest>
