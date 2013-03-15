@@ -1,4 +1,3 @@
-import init.b2g.rc
 import init.sc02b.usb.rc
 
 on boot
