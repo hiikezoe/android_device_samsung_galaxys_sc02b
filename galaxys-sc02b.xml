@@ -90,10 +90,10 @@
   <project path="system/vold" name="platform/system/vold" revision="3ad9072a5d6f6bda32123b367545649364e3c11d"/>
 
   <project path="hardware/broadcom/wlan" name="platform/hardware/broadcom/wlan" revision="07ef2f509a362cc6a5825d0d19143dc4bd2474e0"/>
-  <project path="kernel/samsung/galaxys_sc02b" name="android_kernel_samsung_aries" remote="hiikezoe" branch="b2g"/>
-  <project path="device/samsung/galaxys_sc02b" name="android_device_samsung_galaxys_sc02b" remote="hiikezoe" branch="b2g"/>
+  <project path="kernel/samsung/galaxys_sc02b" name="android_kernel_samsung_aries" remote="hiikezoe" revision="b2g"/>
+  <project path="device/samsung/galaxys_sc02b" name="android_device_samsung_galaxys_sc02b" remote="hiikezoe" revision="b2g"/>
 
-  <project path="external/yaffs2" name="android_external_yaffs2" remote="cyanogenmod" branch="ics"/>
-  <project path="bootable/recovery" name="android_bootable_recovery" remote="cyanogenmod" branch="ics"/>
+  <project path="external/yaffs2" name="android_external_yaffs2" remote="cyanogenmod" revision="ics"/>
+  <project path="bootable/recovery" name="android_bootable_recovery" remote="cyanogenmod" revision="ics"/>
 
 </manifest>
