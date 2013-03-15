@@ -22,6 +22,8 @@ INTERNAL_RECOVERY_FILES := $(filter $(TARGET_RECOVERY_OUT)/%, \
 	$(foreach module, $(ALL_MODULES), $(ALL_MODULES.$(module).INSTALLED)) \
 	$(ALL_DEFAULT_INSTALLED_MODULES))
 
+MAKE_EXT4FS := $(addprefix $(TARGET_ROOT_OUT)/bin/, make_ext4fs)
+
 TARGET_DEVICE_DIR := device/samsung/galaxys_sc02b
 
 recovery_uncompressed_ramdisk := $(PRODUCT_OUT)/ramdisk-recovery.cpio
@@ -56,6 +58,7 @@ $(TARGET_RECOVERY_ROOT_TIMESTAMP): $(INTERNAL_RECOVERY_FILES) \
 	$(info Modifying ramdisk contents...)
 	cp -f $(recovery_initrc) $(TARGET_RECOVERY_ROOT_OUT)/init.rc
 	cp -f $(recovery_binary) $(TARGET_RECOVERY_ROOT_OUT)/sbin/
+	cp -f $(MAKE_EXT4FS) $(TARGET_RECOVERY_ROOT_OUT)/sbin/
 	rm -f $(TARGET_RECOVERY_ROOT_OUT)/init.*.rc
 	mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/system/bin
 	cp -rf $(recovery_resources_common) $(TARGET_RECOVERY_ROOT_OUT)/
