@@ -55,7 +55,6 @@
   <project path="external/libvpx" name="platform/external/libvpx" revision="3a40da0d96da5c520e7707aa14f48a80956e20d7"/>
   <project path="external/mksh" name="platform/external/mksh" revision="5155f1c7438ef540d7b25eb70aa1639579795b07"/>
   <project path="external/opensans" name="platform_external_opensans" remote="b2g" revision="b5b4c226ca1d71e936153cf679dda6d3d60e2354" upstream="v1-train"/>
-  <project path="external/openssl" name="platform/external/openssl" revision="ce96fb211b9a44bbd7fb5ef7ed0e6c1244045c2e"/>
   <project path="external/protobuf" name="platform/external/protobuf" revision="e217977611c52bccde7f7c78e1d3c790c6357431"/>
   <project path="external/safe-iop" name="platform/external/safe-iop" revision="07073634e2e3aa4f518e36ed5dec3aabc549d5fb"/>
   <project path="external/screencap-gonk" name="screencap-gonk" remote="b2g" revision="e6403c71e9eca8cb943739d5a0a192deac60fc51" upstream="v1-train"/>
@@ -72,7 +71,6 @@
   <project path="external/webrtc" name="platform/external/webrtc" revision="4b6dc1ec58105d17dc8c2f550124cc0621dc93b7"/>
   <project path="external/wpa_supplicant" name="platform/external/wpa_supplicant" revision="a01d37870bbf9892d43e792e5de0683ca41c5497"/>
   <project path="external/wpa_supplicant_8" name="platform/external/wpa_supplicant_8" revision="648b7492d15bb4efaeebdfdd8bd261563a5f6227"/>
-  <project path="external/zlib" name="platform/external/zlib" revision="69e5801bd16a495e1c1666669fe827b1ddb8d56b"/>
   <project path="frameworks/base" name="platform/frameworks/base" revision="df331873c8576e0ae34ae1ee3cc258beed373535"/>
   <project path="frameworks/opt/emoji" name="platform/frameworks/opt/emoji" revision="a95d8db002770469d72dfaf59ff37ac96db29a87"/>
   <project path="frameworks/support" name="platform/frameworks/support" revision="bfc8e01b7b0d5ea70ce89d0409b72b7f7d540f43"/>
@@ -94,6 +92,8 @@
   <project path="device/samsung/galaxys_sc02b" name="android_device_samsung_galaxys_sc02b" remote="hiikezoe" revision="b2g"/>
 
   <project path="external/yaffs2" name="android_external_yaffs2" remote="cyanogenmod" revision="ics"/>
+  <project path="external/openssl" name="android_external_openssl" remote="cyanogenmod" revision="ics"/>
+  <project path="external/zlib" name="android_external_zlib" remote="cyanogenmod" revision="ics"/>
   <project path="bootable/recovery" name="android_bootable_recovery" remote="cyanogenmod" revision="ics"/>
 
 </manifest>
