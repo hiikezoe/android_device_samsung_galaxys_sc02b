@@ -7,6 +7,7 @@
   <remote name="mozilla" fetch="git://github.com/mozilla/"/>
   <remote name="mozillaorg" fetch="https://git.mozilla.org/releases"/>
   <remote name="hiikezoe" fetch="git://github.com/hiikezoe/"/>
+  <remote name="cyanogenmod" fetch="git://github.com/CyanogenMod/"/>
   <default revision="refs/tags/android-4.0.4_r1.2" remote="linaro" sync-j="4"/>
 
   <!-- Gonk specific things and forks -->
@@ -23,7 +24,6 @@
   <!-- Stock Android things -->
   <project path="abi/cpp" name="platform/abi/cpp" revision="6426040f1be4a844082c9769171ce7f5341a5528"/>
   <project path="bionic" name="platform/bionic" revision="3d11bf0f3f3cf848f6f1e8449bf8736d8d1c78a3"/>
-  <project path="bootable/recovery" name="platform/bootable/recovery" revision="fadc5ac81d6400ebdd041f7d4ea64021596d6b7d"/>
   <project path="device/common" name="device/common" revision="7d4526582f88808a3194e1a3b304abb369d2745c"/>
   <project path="device/sample" name="device/sample" revision="ef228b8b377a9663e94be4b1aeb6c2bf7a07d098"/>
   <project path="external/apache-http" name="platform/external/apache-http" revision="6c9d8c58d3ed710f87c26820d903bb8aad81754f"/>
@@ -73,7 +73,6 @@
   <project path="external/wpa_supplicant" name="platform/external/wpa_supplicant" revision="a01d37870bbf9892d43e792e5de0683ca41c5497"/>
   <project path="external/wpa_supplicant_8" name="platform/external/wpa_supplicant_8" revision="648b7492d15bb4efaeebdfdd8bd261563a5f6227"/>
   <project path="external/zlib" name="platform/external/zlib" revision="69e5801bd16a495e1c1666669fe827b1ddb8d56b"/>
-  <project path="external/yaffs2" name="platform/external/yaffs2" revision="6232e2d5ab34a40d710e4b05ab0ec6e3727804e7"/>
   <project path="frameworks/base" name="platform/frameworks/base" revision="df331873c8576e0ae34ae1ee3cc258beed373535"/>
   <project path="frameworks/opt/emoji" name="platform/frameworks/opt/emoji" revision="a95d8db002770469d72dfaf59ff37ac96db29a87"/>
   <project path="frameworks/support" name="platform/frameworks/support" revision="bfc8e01b7b0d5ea70ce89d0409b72b7f7d540f43"/>
@@ -93,5 +92,8 @@
   <project path="hardware/broadcom/wlan" name="platform/hardware/broadcom/wlan" revision="07ef2f509a362cc6a5825d0d19143dc4bd2474e0"/>
   <project path="kernel/samsung/galaxys_sc02b" name="android_kernel_samsung_aries" remote="hiikezoe" branch="b2g"/>
   <project path="device/samsung/galaxys_sc02b" name="android_device_samsung_galaxys_sc02b" remote="hiikezoe" branch="b2g"/>
+
+  <project path="external/yaffs2" name="android_external_yaffs2" remote="cyanogenmod" branch="ics"/>
+  <project path="bootable/recovery" name="android_bootable_recovery" remote="cyanogenmod" branch="ics"/>
 
 </manifest>
