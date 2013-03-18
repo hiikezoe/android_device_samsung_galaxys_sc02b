@@ -36,7 +36,7 @@ install_blobs() {
 
 CRESPO_BLOBS="akm-crespo-imm76d-8314bd5a.tgz
               broadcom-crespo-imm76d-a794e660.tgz
-              imgtec-crespo-jzo54k-c20bd30b.tgz
+              imgtec-crespo-imm76d-d381b3bf.tgz
               nxp-crespo-imm76d-d3862877.tgz
               samsung-crespo-imm76d-d2d82200.tgz"
 
