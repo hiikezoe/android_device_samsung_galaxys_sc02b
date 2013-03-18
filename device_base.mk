@@ -51,7 +51,7 @@ PRODUCT_COPY_FILES += \
   device/samsung/galaxys_sc02b/init.rc:root/init.rc \
   device/samsung/galaxys_sc02b/init.sc02b.rc:root/init.sc02b.rc \
   device/samsung/galaxys_sc02b/init.sc02b.usb.rc:root/init.sc02b.usb.rc \
-  device/samsung/galaxys_sc02b/ueventd.sc02b.rc:root/ueventd.sc02b.rc
+  device/samsung/galaxys_sc02b/ueventd.aries.rc:root/ueventd.aries.rc
 
 # Prebuilt kl and kcm keymaps
 PRODUCT_COPY_FILES += \
@@ -112,16 +112,17 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
   lights.s5pc110 \
   hwcomposer.s5pc110 \
-  sensors.sc02b
+  sensors.aries
 
 # Camera
 PRODUCT_PACKAGES += \
-  camera.sc02b
+  camera.aries \
+  libs3cjpeg
 
 # audio
 PRODUCT_PACKAGES += \
-  audio_policy.sc02b \
-  audio.primary.sc02b \
+  audio_policy.aries \
+  audio.primary.aries \
   audio.a2dp.default \
   libaudioutils
 
