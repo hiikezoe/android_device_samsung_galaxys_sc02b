@@ -99,6 +99,9 @@ on fs
     exec /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
     exec /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
 
+    mkdir /radio 0775 radio radio
+    mount yaffs2 mtd@radio /radio
+
     # Mount /system rw first to give the filesystem a chance to save a checkpoint
     mount ext4 /dev/lvpool/system /system wait
     chmod 0755 /system/b2g/b2g
@@ -137,6 +140,8 @@ on post-fs-data
     # We chown/chmod /data again so because mount is run as root + defaults
     chown system system /data
     chmod 0771 /data
+
+    symlink /radio/modem.bin /dev/block/bml12
 
     # Create dump dir and collect dumps.
     # Do this before we mount cache so eventually we can use cache for
