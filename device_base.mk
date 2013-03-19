@@ -180,13 +180,4 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 # Screen size is "normal", density is "hdpi"
 PRODUCT_AAPT_CONFIG := normal hdpi
 
-ifeq ($(TARGET_PREBUILT_WIFI_MODULE),)
-LOCAL_WIFI_MODULE := device/samsung/galaxys_sc02b/bcmdhd.ko
-else
-LOCAL_WIFI_MODULE := $(TARGET_PREBUILT_WIFI_MODULE)
-endif
-
-PRODUCT_COPY_FILES += \
-  $(LOCAL_WIFI_MODULE):system/modules/bcmdhd.ko
-
 $(call inherit-product-if-exists, vendor/nxp/pn544/nxp-pn544-fw-vendor.mk)
