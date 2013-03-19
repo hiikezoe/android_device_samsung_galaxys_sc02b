@@ -57,8 +57,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
   device/samsung/galaxys_sc02b/s3c-keypad.kl:system/usr/keylayout/s3c-keypad.kl \
   device/samsung/galaxys_sc02b/s3c-keypad.kcm:system/usr/keychars/s3c-keypad.kcm \
-  device/samsung/galaxys_sc02b/sc02b-keypad.kl:system/usr/keylayout/sc02b-keypad.kl \
-  device/samsung/galaxys_sc02b/sc02b-keypad.kcm:system/usr/keychars/sc02b-keypad.kcm \
+  device/samsung/galaxys_sc02b/aries-keypad.kl:system/usr/keylayout/aries-keypad.kl \
+  device/samsung/galaxys_sc02b/aries-keypad.kcm:system/usr/keychars/aries-keypad.kcm \
   device/samsung/galaxys_sc02b/cypress-touchkey.kl:system/usr/keylayout/cypress-touchkey.kl \
   device/samsung/galaxys_sc02b/cypress-touchkey.kcm:system/usr/keychars/cypress-touchkey.kcm \
   device/samsung/galaxys_sc02b/sec_jack.kl:system/usr/keylayout/sec_jack.kl \
