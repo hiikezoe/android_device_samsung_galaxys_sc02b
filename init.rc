@@ -96,19 +96,6 @@ loglevel 3
     chmod 0644 /dev/xt_qtaguid
 
 on fs
-    exec /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
-    exec /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
-
-    mkdir /radio 0775 radio radio
-    mount yaffs2 mtd@radio /radio
-
-    # Mount /system rw first to give the filesystem a chance to save a checkpoint
-    mount ext4 /dev/lvpool/system /system wait
-    chmod 0755 /system/b2g/b2g
-    chmod 0755 /system/b2g/plugin-container
-    chmod 0755 /system/b2g/updater
-    mount ext4 /dev/lvpool/system /system ro remount
-    mount ext4 /dev/lvpool/userdata /data nosuid nodev
     mount yaffs2 mtd@cache /cache nosuid nodev
 
 on post-fs

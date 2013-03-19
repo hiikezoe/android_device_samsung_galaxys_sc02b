@@ -33,6 +33,10 @@ on boot
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
 
 on fs
+    mkdir /radio 0775 radio radio
+    mount yaffs2 mtd@radio /radio
+
+    wait /dev/block/mmcblk0p2
     exec /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
     exec /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
 
@@ -40,11 +44,13 @@ on fs
     mount yaffs2 mtd@efs /efs noatime nosuid nodev
     chmod 770 /efs/bluetooth
     chmod 770 /efs/imei
-    mount ext4 /dev/block/platform/s3c-sdhci.0/by-name/system /system wait rw
+
+    mount ext4 /dev/lvpool/system /system wait
     chmod 0755 /system/b2g/b2g
     chmod 0755 /system/b2g/plugin-container
     chmod 0755 /system/b2g/updater
-    mount ext4 /dev/block/platform/s3c-sdhci.0/by-name/userdata /data wait noatime nosuid nodev nomblk_io_submit
+    mount ext4 /dev/lvpool/system /system ro remount
+    mount ext4 /dev/lvpool/userdata /data nosuid nodev
 
     export EXTERNAL_STORAGE /mnt/sdcard
     mkdir /mnt/sdcard 0000 system system
