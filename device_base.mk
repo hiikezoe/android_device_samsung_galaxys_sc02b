@@ -133,6 +133,10 @@ PRODUCT_PACKAGES += \
   libstagefrighthw \
   com.android.future.usb.accessory
 
+# Bluetooth MAC Address
+PRODUCT_PACKAGES += \
+  bdaddr_read
+
 # Input device calibration files
 PRODUCT_COPY_FILES += \
   device/samsung/galaxys_sc02b/mxt224_ts_input.idc:system/usr/idc/mxt224_ts_input.idc
