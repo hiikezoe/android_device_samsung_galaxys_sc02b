@@ -95,12 +95,6 @@ do
             system/vendor/firmware/libpn544_fw.so \
             "
     ;;
-  samsung)
-    TO_EXTRACT="\
-            system/lib/libsecril-client.so \
-            system/vendor/lib/libsec-ril.so \
-            "
-    ;;
   esac
   echo \ \ Extracting files from OTA package
   for ONE_FILE in $TO_EXTRACT

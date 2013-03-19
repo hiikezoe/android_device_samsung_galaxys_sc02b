@@ -36,8 +36,7 @@ install_blobs() {
 
 CRESPO_BLOBS="akm-crespo-imm76d-8314bd5a.tgz
               broadcom-crespo-imm76d-a794e660.tgz
-              imgtec-crespo-imm76d-d381b3bf.tgz
-              samsung-crespo-imm76d-d2d82200.tgz"
+              imgtec-crespo-imm76d-d381b3bf.tgz"
 
 CSUM_LIST="$PWD/blob-shasums"
 
