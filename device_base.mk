@@ -99,6 +99,7 @@ PRODUCT_COPY_FILES += \
   device/samsung/galaxys_sc02b/sec_mm/sec_omx/sec_omx_core/secomxregistry:system/etc/secomxregistry \
   device/samsung/galaxys_sc02b/media_profiles.xml:system/etc/media_profiles.xml
 
+PRODUCT_PACKAGES += DroidSansFallback.ttf
 
 # These are the OpenMAX IL modules
 PRODUCT_PACKAGES += \
