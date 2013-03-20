@@ -262,9 +262,6 @@ on boot
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
-# Set this property so surfaceflinger is not started by system_init
-    setprop system_init.startsurfaceflinger 0
-
     class_start core
     class_start main
 
@@ -381,7 +378,6 @@ service servicemanager /system/bin/servicemanager
     critical
     onrestart restart zygote
     onrestart restart media
-    onrestart restart surfaceflinger
     onrestart restart drm
 
 service vold /system/bin/vold
@@ -403,12 +399,6 @@ service ril-daemon /system/bin/rild
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio sdcard_rw log
-
-service surfaceflinger /system/bin/surfaceflinger
-    class main
-    user system
-    group graphics
-    onrestart restart zygote
 
 service zygote /system/bin/app_process -Xzygote /system/bin --zygote --start-system-server
     class main
