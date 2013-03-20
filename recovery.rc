@@ -14,6 +14,7 @@ on init
     mkdir /data
     mkdir /cache
     mount /tmp /tmp tmpfs
+    mkdir /efs
 
 on fs
     exec /init.lvm.sh
