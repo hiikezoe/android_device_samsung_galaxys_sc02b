@@ -16,6 +16,7 @@ on init
     mount /tmp /tmp tmpfs
 
 on fs
+    exec /init.lvm.sh
     exec /lvm/sbin/lvm vgscan --mknodes --ignorelockingfailure
     exec /lvm/sbin/lvm vgchange -aly --ignorelockingfailure
 

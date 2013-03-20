@@ -46,6 +46,10 @@ PRODUCT_COPY_FILES := \
   device/samsung/galaxys_sc02b/vold.fstab:system/etc/vold.fstab \
   device/samsung/galaxys_sc02b/egl.cfg:system/lib/egl/egl.cfg
 
+# Recovery files
+PRODUCT_COPY_FILES += \
+  device/samsung/galaxys_sc02b/recovery/init.lvm.sh:recovery/root/init.lvm.sh
+
 # Init files
 PRODUCT_COPY_FILES += \
   device/samsung/galaxys_sc02b/init.rc:root/init.rc \
