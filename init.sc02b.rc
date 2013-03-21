@@ -5,7 +5,6 @@ on boot
 
     setprop ro.build.product aries
     setprop ro.product.device aries
-    setprop ro.radio.noril yes
 
     setprop ro.crypto.keyfile.userdata /efs/userdata_footer
 
