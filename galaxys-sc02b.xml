@@ -48,7 +48,6 @@
   <project path="external/jpeg" name="platform/external/jpeg" revision="d4fad7f50f79626455d88523207e05b868819cd8"/>
   <project path="external/libgsm" name="platform/external/libgsm" revision="5e4516958690b9a1b2c98f88eeecba3edd2dbda4"/>
   <project path="external/liblzf" name="platform/external/liblzf" revision="6946aa575b0949d045722794850896099d937cbb"/>
-  <project path="external/libnfc-nxp" name="platform/external/libnfc-nxp" revision="533c14450e6239cce8acb74f4e4dea2c89f8f219"/>
   <project path="external/libnl-headers" name="platform/external/libnl-headers" revision="6ccf7349d61f73ac26a0675d735d903ab919c658"/>
   <project path="external/libphonenumber" name="platform/external/libphonenumber" revision="d470984844c388d6766c3de6ac64e93e00480fc9"/>
   <project path="external/libpng" name="platform/external/libpng" revision="84d92c718ab9f48faec0f640747c4b6f7a995607"/>
