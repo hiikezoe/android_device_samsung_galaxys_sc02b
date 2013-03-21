@@ -23,64 +23,58 @@
 #include <sys/select.h>
 #include <cutils/log.h>
 
-#include "GyroSensor.h"
 
-#define FETCH_FULL_EVENT_BEFORE_RETURN 1
+#include "Smb380Sensor.h"
+
 
 /*****************************************************************************/
-
-GyroSensor::GyroSensor()
-    : SensorBase(NULL, "gyro"),
+Smb380Sensor::Smb380Sensor()
+    : SensorBase(NULL, "accelerometer_sensor"),
       mEnabled(0),
+
       mInputReader(4),
       mHasPendingEvent(false)
 {
+    LOGD("Smb380Sensor::Smb380Sensor()");
     mPendingEvent.version = sizeof(sensors_event_t);
-    mPendingEvent.sensor = ID_GY;
-    mPendingEvent.type = SENSOR_TYPE_GYROSCOPE;
+    mPendingEvent.sensor = ID_A;
+    mPendingEvent.type = SENSOR_TYPE_ACCELEROMETER;
     memset(mPendingEvent.data, 0, sizeof(mPendingEvent.data));
-
+    
+    LOGD("Smb380Sensor::Smb380Sensor() open data_fd");
+	
     if (data_fd) {
         strcpy(input_sysfs_path, "/sys/class/input/");
         strcat(input_sysfs_path, input_name);
         strcat(input_sysfs_path, "/device/");
         input_sysfs_path_len = strlen(input_sysfs_path);
-        enable(0, 1);
+
+        //enable(0, 1);
     }
 }
 
-GyroSensor::~GyroSensor() {
+Smb380Sensor::~Smb380Sensor() {
+
+    LOGD("Smb380Sensor::~Smb380Sensor()");
     if (mEnabled) {
         enable(0, 0);
     }
 }
 
-int GyroSensor::setInitialState() {
-    struct input_absinfo absinfo_x;
-    struct input_absinfo absinfo_y;
-    struct input_absinfo absinfo_z;
-    float value;
-    if (!ioctl(data_fd, EVIOCGABS(EVENT_TYPE_GYRO_X), &absinfo_x) &&
-        !ioctl(data_fd, EVIOCGABS(EVENT_TYPE_GYRO_X), &absinfo_y) &&
-        !ioctl(data_fd, EVIOCGABS(EVENT_TYPE_GYRO_X), &absinfo_z)) {
-        value = absinfo_x.value;
-        mPendingEvent.data[0] = value * CONVERT_GYRO_X;
-        value = absinfo_x.value;
-        mPendingEvent.data[1] = value * CONVERT_GYRO_Y;
-        value = absinfo_x.value;
-        mPendingEvent.data[2] = value * CONVERT_GYRO_Z;
-        mHasPendingEvent = true;
-    }
-    return 0;
-}
 
-int GyroSensor::enable(int32_t, int en) {
+
+int Smb380Sensor::enable(int32_t, int en) {
+
+	   
+    LOGD("Smb380Sensor::~enable(0, %d)", en);
     int flags = en ? 1 : 0;
     if (flags != mEnabled) {
         int fd;
         strcpy(&input_sysfs_path[input_sysfs_path_len], "enable");
+        LOGD("Smb380Sensor::~enable(0, %d) open %s",en,  input_sysfs_path);
         fd = open(input_sysfs_path, O_RDWR);
         if (fd >= 0) {
+             LOGD("Smb380Sensor::~enable(0, %d) opened %s",en,  input_sysfs_path);
             char buf[2];
             int err;
             buf[1] = 0;
@@ -92,26 +86,38 @@ int GyroSensor::enable(int32_t, int en) {
             err = write(fd, buf, sizeof(buf));
             close(fd);
             mEnabled = flags;
-            setInitialState();
+            //setInitialState();
             return 0;
         }
-        return -1;
+        return -1;        
     }
     return 0;
 }
 
-bool GyroSensor::hasPendingEvents() const {
+
+bool Smb380Sensor::hasPendingEvents() const {
+    /* FIXME probably here should be returning mEnabled but instead
+	mHasPendingEvents. It does not work, so we cheat.*/
+    //LOGD("Smb380Sensor::~hasPendingEvents %d", mHasPendingEvent ? 1 : 0 );
     return mHasPendingEvent;
 }
 
-int GyroSensor::setDelay(int32_t handle, int64_t delay_ns)
+
+int Smb380Sensor::setDelay(int32_t handle, int64_t ns)
 {
+    LOGD("Smb380Sensor::~setDelay(%d, %lld)", handle, ns);
+
     int fd;
-    strcpy(&input_sysfs_path[input_sysfs_path_len], "poll_delay");
+
+    if (ns < 10000000) {
+        ns = 10000000; // Minimum on stock
+    }
+
+    strcpy(&input_sysfs_path[input_sysfs_path_len], "delay");
     fd = open(input_sysfs_path, O_RDWR);
     if (fd >= 0) {
         char buf[80];
-        sprintf(buf, "%lld", delay_ns);
+        sprintf(buf, "%lld", ns / 10000000 * 10); // Some flooring to match stock value
         write(fd, buf, strlen(buf)+1);
         close(fd);
         return 0;
@@ -119,38 +125,37 @@ int GyroSensor::setDelay(int32_t handle, int64_t delay_ns)
     return -1;
 }
 
-int GyroSensor::readEvents(sensors_event_t* data, int count)
+
+int Smb380Sensor::readEvents(sensors_event_t* data, int count)
 {
+    //LOGD("Smb380Sensor::~readEvents() %d", count);
     if (count < 1)
         return -EINVAL;
-
+        
     if (mHasPendingEvent) {
         mHasPendingEvent = false;
         mPendingEvent.timestamp = getTimestamp();
         *data = mPendingEvent;
         return mEnabled ? 1 : 0;
     }
-
+        
     ssize_t n = mInputReader.fill(data_fd);
     if (n < 0)
         return n;
 
     int numEventReceived = 0;
     input_event const* event;
-
-#if FETCH_FULL_EVENT_BEFORE_RETURN
-again:
-#endif
+	
     while (count && mInputReader.readEvent(&event)) {
         int type = event->type;
         if (type == EV_REL) {
             float value = event->value;
-            if (event->code == EVENT_TYPE_GYRO_X) {
-                mPendingEvent.data[0] = value * CONVERT_GYRO_X;
-            } else if (event->code == EVENT_TYPE_GYRO_Y) {
-                mPendingEvent.data[1] = value * CONVERT_GYRO_Y;
-            } else if (event->code == EVENT_TYPE_GYRO_Z) {
-                mPendingEvent.data[2] = value * CONVERT_GYRO_Z;
+            if (event->code == EVENT_TYPE_ACCEL_X) {
+                mPendingEvent.acceleration.x = value * CONVERT_A_X;
+            } else if (event->code == EVENT_TYPE_ACCEL_Y) {
+                mPendingEvent.acceleration.y = value * CONVERT_A_Y;
+            } else if (event->code == EVENT_TYPE_ACCEL_Z) {
+                mPendingEvent.acceleration.z = value * CONVERT_A_Z;
             }
         } else if (type == EV_SYN) {
             mPendingEvent.timestamp = timevalToNano(event->time);
@@ -160,22 +165,13 @@ again:
                 numEventReceived++;
             }
         } else {
-            LOGE("GyroSensor: unknown event (type=%d, code=%d)",
+            LOGE("Smb380Sensor: unknown event (type=%d, code=%d)",
                     type, event->code);
         }
         mInputReader.next();
     }
-
-#if FETCH_FULL_EVENT_BEFORE_RETURN
-    /* if we didn't read a complete event, see if we can fill and
-       try again instead of returning with nothing and redoing poll. */
-    if (numEventReceived == 0 && mEnabled == 1) {
-        n = mInputReader.fill(data_fd);
-        if (n)
-            goto again;
-    }
-#endif
-
-    return numEventReceived;
+ 
+	//LOGD("Smb380Sensor::~readEvents() numEventReceived = %d", numEventReceived);
+	return numEventReceived++;
+		
 }
-

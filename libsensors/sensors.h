@@ -54,19 +54,20 @@ __BEGIN_DECLS
 
 #define AKM_DEVICE_NAME     "/dev/akm8973_aot"
 
-#define EVENT_TYPE_ACCEL_X          REL_Y
-#define EVENT_TYPE_ACCEL_Y          REL_X
-#define EVENT_TYPE_ACCEL_Z          REL_Z
 
-#define EVENT_TYPE_YAW              REL_RX
-#define EVENT_TYPE_PITCH            REL_RY
-#define EVENT_TYPE_ROLL             REL_RZ
+#define EVENT_TYPE_ACCEL_X          ABS_X
+#define EVENT_TYPE_ACCEL_Y          ABS_Y
+#define EVENT_TYPE_ACCEL_Z          ABS_Z
+
+#define EVENT_TYPE_YAW              REL_X
+#define EVENT_TYPE_PITCH            REL_Y
+#define EVENT_TYPE_ROLL             REL_Z
 #define EVENT_TYPE_ORIENT_STATUS    REL_WHEEL
 
 /* For AK8973iB */
-#define EVENT_TYPE_MAGV_X           REL_DIAL
-#define EVENT_TYPE_MAGV_Y           REL_HWHEEL
-#define EVENT_TYPE_MAGV_Z           REL_MISC
+#define EVENT_TYPE_MAGV_X           ABS_X
+#define EVENT_TYPE_MAGV_Y           ABS_Y
+#define EVENT_TYPE_MAGV_Z           ABS_Z
 
 #define EVENT_TYPE_PROXIMITY        ABS_DISTANCE
 #define EVENT_TYPE_LIGHT            ABS_MISC
@@ -76,28 +77,29 @@ __BEGIN_DECLS
 #define EVENT_TYPE_GYRO_Z           REL_RZ
 
 
-// 64 LSB = 1G for KR3DM
-#define LSB                         (64.0f)
-#define NUMOFACCDATA                (8.0f)
+// 720 LSG = 1G
+#define LSG                         (720.0f)
+#define NUMOFACCDATA                8
 
 // conversion of acceleration data to SI units (m/s^2)
 #define RANGE_A                     (2*GRAVITY_EARTH)
-#define CONVERT_A                   (GRAVITY_EARTH / LSB / NUMOFACCDATA)
+#define RESOLUTION_A                (RANGE_A/(512))
+#define CONVERT_A                   (RANGE_A/(512))
 #define CONVERT_A_X                 (CONVERT_A)
 #define CONVERT_A_Y                 (CONVERT_A)
 #define CONVERT_A_Z                 (CONVERT_A)
 
 // conversion of magnetic data to uT units
-#define CONVERT_M                   (1.0f/16.0f)
-#define CONVERT_M_X                 (-CONVERT_M)
-#define CONVERT_M_Y                 (-CONVERT_M)
-#define CONVERT_M_Z                 (-CONVERT_M)
+#define CONVERT_M                   (1.0f/1000.0f)
+#define CONVERT_M_X                 (CONVERT_M)
+#define CONVERT_M_Y                 (CONVERT_M)
+#define CONVERT_M_Z                 (CONVERT_M)
 
 /* conversion of orientation data to degree units */
-#define CONVERT_O                   (1.0f/64.0f)
+#define CONVERT_O                   (1.0f/1000.0f)
 #define CONVERT_O_A                 (CONVERT_O)
 #define CONVERT_O_P                 (CONVERT_O)
-#define CONVERT_O_R                 (-CONVERT_O)
+#define CONVERT_O_R                 (CONVERT_O)
 
 // conversion of gyro data to SI units (radian/sec)
 #define RANGE_GYRO                  (2000.0f*(float)M_PI/180.0f)

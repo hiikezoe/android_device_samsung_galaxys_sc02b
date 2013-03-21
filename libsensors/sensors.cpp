@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 #include <linux/input.h>
-#include <linux/akm8973.h>
+
 
 #include <utils/Atomic.h>
 #include <utils/Log.h>
@@ -35,8 +35,10 @@
 
 #include "LightSensor.h"
 #include "ProximitySensor.h"
-#include "AkmSensor.h"
-#include "GyroSensor.h"
+//#include "BoschYamaha.h"
+#include "Smb380Sensor.h"
+#include "CompassSensor.h"
+#include "OrientationSensor.h"
 
 /*****************************************************************************/
 
@@ -67,30 +69,27 @@
 
 /* The SENSORS Module */
 static const struct sensor_t sSensorList[] = {
-        { "KR3DM 3-axis Accelerometer",
-          "STMicroelectronics",
+
+        { "SMB380 3-axis Accelerometer",
+          "Bosch Sensortec",
           1, SENSORS_ACCELERATION_HANDLE,
-          SENSOR_TYPE_ACCELEROMETER, RANGE_A, CONVERT_A, 0.23f, 20000, { } },
-        { "AK8973 3-axis Magnetic field sensor",
-          "Asahi Kasei Microdevices",
+          SENSOR_TYPE_ACCELEROMETER, RANGE_A, RESOLUTION_A, 0.20f, 40000, { } },
+        { "MS3C 3-axis Magnetic field sensor",
+          "Yamaha ",
           1, SENSORS_MAGNETIC_FIELD_HANDLE,
-          SENSOR_TYPE_MAGNETIC_FIELD, 2000.0f, CONVERT_M, 6.8f, 16667, { } },
-        { "AK8973 Orientation sensor",
-          "Asahi Kasei Microdevices",
+          SENSOR_TYPE_MAGNETIC_FIELD, 2000.0f, CONVERT_M, 6.8f, 30000, { } },
+	{ "CM Hacked Orientation Sensor",
+          "CM Team",
           1, SENSORS_ORIENTATION_HANDLE,
-          SENSOR_TYPE_ORIENTATION, 360.0f, CONVERT_O, 7.8f, 16667, { } },
+          SENSOR_TYPE_ORIENTATION,  360.0f, CONVERT_O, 7.8f, 30000, { } },
         { "GP2A Light sensor",
           "Sharp",
           1, SENSORS_LIGHT_HANDLE,
-          SENSOR_TYPE_LIGHT,  powf(10, (280.0f / 47.0f)) * 4, 1.0f, 0.75f, 0, { } },
+          SENSOR_TYPE_LIGHT, 10240.0f, 1.0f, 0.75f, 0, { } },
         { "GP2A Proximity sensor",
           "Sharp",
           1, SENSORS_PROXIMITY_HANDLE,
-          SENSOR_TYPE_PROXIMITY, 5.0f, 5.0f, 0.75f, 0, { } },
-        { "K3G Gyroscope sensor",
-          "STMicroelectronics",
-          1, SENSORS_GYROSCOPE_HANDLE,
-          SENSOR_TYPE_GYROSCOPE, RANGE_GYRO, CONVERT_GYRO, 6.1f, 1190, { } },
+          SENSOR_TYPE_PROXIMITY, 5.0f, 5.0f, 0.75f, 0, { } },        
 };
 
 
@@ -135,9 +134,10 @@ private:
     enum {
         light           = 0,
         proximity       = 1,
-        akm             = 2,
-        gyro            = 3,
-        numSensorDrivers,
+        bosch           = 2,
+        yamaha          = 3,
+	orientation 	= 4,        
+	numSensorDrivers,
         numFds,
     };
 
@@ -147,18 +147,27 @@ private:
     int mWritePipeFd;
     SensorBase* mSensors[numSensorDrivers];
 
+    // For keeping track of usage (only count from system)
+    bool mAccelActive;
+    bool mMagnetActive;
+    bool mOrientationActive;
+
+    int real_activate(int handle, int enabled);
+
     int handleToDriver(int handle) const {
         switch (handle) {
+           
             case ID_A:
-            case ID_M:
-            case ID_O:
-                return akm;
-            case ID_P:
+            	return bosch;
+	    case ID_M:
+            	return yamaha;
+	    case ID_O:
+		return orientation;
+	    case ID_P:
                 return proximity;
             case ID_L:
                 return light;
-            case ID_GY:
-                return gyro;
+                 
         }
         return -EINVAL;
     }
@@ -178,15 +187,20 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[proximity].events = POLLIN;
     mPollFds[proximity].revents = 0;
 
-    mSensors[akm] = new AkmSensor();
-    mPollFds[akm].fd = mSensors[akm]->getFd();
-    mPollFds[akm].events = POLLIN;
-    mPollFds[akm].revents = 0;
+    mSensors[bosch] = new Smb380Sensor();
+    mPollFds[bosch].fd = mSensors[bosch]->getFd();
+    mPollFds[bosch].events = POLLIN;
+    mPollFds[bosch].revents = 0;
 
-    mSensors[gyro] = new GyroSensor();
-    mPollFds[gyro].fd = mSensors[gyro]->getFd();
-    mPollFds[gyro].events = POLLIN;
-    mPollFds[gyro].revents = 0;
+    mSensors[yamaha] = new CompassSensor();
+    mPollFds[yamaha].fd = mSensors[yamaha]->getFd();
+    mPollFds[yamaha].events = POLLIN;
+    mPollFds[yamaha].revents = 0;
+
+    mSensors[orientation] = new OrientationSensor();
+    mPollFds[orientation].fd = mSensors[orientation]->getFd();
+    mPollFds[orientation].events = POLLIN;
+    mPollFds[orientation].revents = 0;
 
     int wakeFds[2];
     int result = pipe(wakeFds);
@@ -198,6 +212,10 @@ sensors_poll_context_t::sensors_poll_context_t()
     mPollFds[wake].fd = wakeFds[0];
     mPollFds[wake].events = POLLIN;
     mPollFds[wake].revents = 0;
+
+    mAccelActive = false;
+    mMagnetActive = false;
+    mOrientationActive = false;
 }
 
 sensors_poll_context_t::~sensors_poll_context_t() {
@@ -209,6 +227,36 @@ sensors_poll_context_t::~sensors_poll_context_t() {
 }
 
 int sensors_poll_context_t::activate(int handle, int enabled) {
+    int err;
+
+    // Orientation requires accelerometer and magnetic sensor
+    if (handle == ID_O) {
+        mOrientationActive = enabled ? true : false;
+        if (!mAccelActive) {
+            err = real_activate(ID_A, enabled);
+            if (err) return err;
+        }
+        if (!mMagnetActive) {
+            err = real_activate(ID_M, enabled);
+            if (err) return err;
+        }
+    }
+    // Keep track of magnetic and accelerometer use from system
+    else if (handle == ID_A) {
+        mAccelActive = enabled ? true : false;
+        // No need to enable or disable if orientation sensor is active as that will handle it
+        if (mOrientationActive) return 0;
+    }
+    else if (handle == ID_M) {
+        mMagnetActive = enabled ? true : false;
+        // No need to enable or disable if orientation sensor is active as that will handle it
+        if (mOrientationActive) return 0;
+    }
+
+    return real_activate(handle, enabled);
+}
+
+int sensors_poll_context_t::real_activate(int handle, int enabled) {
     int index = handleToDriver(handle);
     if (index < 0) return index;
     int err =  mSensors[index]->enable(handle, enabled);
@@ -253,7 +301,7 @@ int sensors_poll_context_t::pollEvents(sensors_event_t* data, int count)
             // some events immediately or just wait if we don't have
             // anything to return
             do {
-                n = poll(mPollFds, numFds, nbEvents ? 0 : -1);
+            n = poll(mPollFds, numFds, nbEvents ? 0 : -1);
             } while (n < 0 && errno == EINTR);
             if (n<0) {
                 LOGE("poll() failed (%s)", strerror(errno));
@@ -264,6 +312,7 @@ int sensors_poll_context_t::pollEvents(sensors_event_t* data, int count)
                 int result = read(mPollFds[wake].fd, &msg, 1);
                 LOGE_IF(result<0, "error reading from wake pipe (%s)", strerror(errno));
                 LOGE_IF(msg != WAKE_MESSAGE, "unknown message on wake queue (0x%02x)", int(msg));
+
                 mPollFds[wake].revents = 0;
             }
         }

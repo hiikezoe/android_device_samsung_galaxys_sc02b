@@ -21,66 +21,59 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/select.h>
+#include <cutils/properties.h>
 #include <cutils/log.h>
 
-#include "GyroSensor.h"
 
-#define FETCH_FULL_EVENT_BEFORE_RETURN 1
+#include "OrientationSensor.h"
+
 
 /*****************************************************************************/
-
-GyroSensor::GyroSensor()
-    : SensorBase(NULL, "gyro"),
+OrientationSensor::OrientationSensor()
+    : SensorBase(NULL, "orientation_sensor"),
       mEnabled(0),
       mInputReader(4),
       mHasPendingEvent(false)
 {
+    LOGD("OrientationSensor::OrientationSensor()");
     mPendingEvent.version = sizeof(sensors_event_t);
-    mPendingEvent.sensor = ID_GY;
-    mPendingEvent.type = SENSOR_TYPE_GYROSCOPE;
+    mPendingEvent.sensor = ID_O;
+    mPendingEvent.type =  SENSOR_TYPE_ORIENTATION;
     memset(mPendingEvent.data, 0, sizeof(mPendingEvent.data));
-
+    
+    LOGD("OrientationSensor::OrientationSensor() open data_fd");
+	
     if (data_fd) {
         strcpy(input_sysfs_path, "/sys/class/input/");
         strcat(input_sysfs_path, input_name);
         strcat(input_sysfs_path, "/device/");
         input_sysfs_path_len = strlen(input_sysfs_path);
-        enable(0, 1);
+
+       // enable(0, 1);
     }
 }
 
-GyroSensor::~GyroSensor() {
+OrientationSensor::~OrientationSensor() {
+
+    LOGD("OrientationSensor::~OrientationSensor()");
     if (mEnabled) {
         enable(0, 0);
     }
 }
 
-int GyroSensor::setInitialState() {
-    struct input_absinfo absinfo_x;
-    struct input_absinfo absinfo_y;
-    struct input_absinfo absinfo_z;
-    float value;
-    if (!ioctl(data_fd, EVIOCGABS(EVENT_TYPE_GYRO_X), &absinfo_x) &&
-        !ioctl(data_fd, EVIOCGABS(EVENT_TYPE_GYRO_X), &absinfo_y) &&
-        !ioctl(data_fd, EVIOCGABS(EVENT_TYPE_GYRO_X), &absinfo_z)) {
-        value = absinfo_x.value;
-        mPendingEvent.data[0] = value * CONVERT_GYRO_X;
-        value = absinfo_x.value;
-        mPendingEvent.data[1] = value * CONVERT_GYRO_Y;
-        value = absinfo_x.value;
-        mPendingEvent.data[2] = value * CONVERT_GYRO_Z;
-        mHasPendingEvent = true;
-    }
-    return 0;
-}
 
-int GyroSensor::enable(int32_t, int en) {
+int OrientationSensor::enable(int32_t, int en) {
+
+	   
+    LOGD("OrientationSensor::~enable(0, %d)", en);
     int flags = en ? 1 : 0;
     if (flags != mEnabled) {
         int fd;
         strcpy(&input_sysfs_path[input_sysfs_path_len], "enable");
+        LOGD("OrientationSensor::~enable(0, %d) open %s",en,  input_sysfs_path);
         fd = open(input_sysfs_path, O_RDWR);
         if (fd >= 0) {
+             LOGD("OrientationSensor::~enable(0, %d) opened %s",en,  input_sysfs_path);
             char buf[2];
             int err;
             buf[1] = 0;
@@ -92,26 +85,44 @@ int GyroSensor::enable(int32_t, int en) {
             err = write(fd, buf, sizeof(buf));
             close(fd);
             mEnabled = flags;
-            setInitialState();
+            //setInitialState();
+
+            /* Since the migration to 3.0 kernel, orientationd doesn't poll
+             * the enabled state properly, so start it when it's enabled and
+             * stop it when we're done using it.
+             */
+            property_set(mEnabled ? "ctl.start" : "ctl.stop", "orientationd");
             return 0;
         }
-        return -1;
+        return -1;        
     }
     return 0;
 }
 
-bool GyroSensor::hasPendingEvents() const {
+
+bool OrientationSensor::hasPendingEvents() const {
+    /* FIXME probably here should be returning mEnabled but instead
+	mHasPendingEvents. It does not work, so we cheat.*/
+    //LOGD("OrientationSensor::~hasPendingEvents %d", mHasPendingEvent ? 1 : 0 );
     return mHasPendingEvent;
 }
 
-int GyroSensor::setDelay(int32_t handle, int64_t delay_ns)
+
+int OrientationSensor::setDelay(int32_t handle, int64_t ns)
 {
+    LOGD("OrientationSensor::~setDelay(%d, %lld)", handle, ns);
+
     int fd;
-    strcpy(&input_sysfs_path[input_sysfs_path_len], "poll_delay");
+
+    if (ns < 10000000) {
+        ns = 10000000; // Minimum on stock
+    }
+
+    strcpy(&input_sysfs_path[input_sysfs_path_len], "delay");
     fd = open(input_sysfs_path, O_RDWR);
     if (fd >= 0) {
         char buf[80];
-        sprintf(buf, "%lld", delay_ns);
+        sprintf(buf, "%lld", ns / 10000000 * 10); // Some flooring to match stock value
         write(fd, buf, strlen(buf)+1);
         close(fd);
         return 0;
@@ -119,38 +130,37 @@ int GyroSensor::setDelay(int32_t handle, int64_t delay_ns)
     return -1;
 }
 
-int GyroSensor::readEvents(sensors_event_t* data, int count)
+
+int OrientationSensor::readEvents(sensors_event_t* data, int count)
 {
+    //LOGD("OrientationSensor::~readEvents() %d", count);
     if (count < 1)
         return -EINVAL;
-
+        
     if (mHasPendingEvent) {
         mHasPendingEvent = false;
         mPendingEvent.timestamp = getTimestamp();
         *data = mPendingEvent;
         return mEnabled ? 1 : 0;
     }
-
+        
     ssize_t n = mInputReader.fill(data_fd);
     if (n < 0)
         return n;
 
     int numEventReceived = 0;
     input_event const* event;
-
-#if FETCH_FULL_EVENT_BEFORE_RETURN
-again:
-#endif
+	
     while (count && mInputReader.readEvent(&event)) {
         int type = event->type;
         if (type == EV_REL) {
             float value = event->value;
-            if (event->code == EVENT_TYPE_GYRO_X) {
-                mPendingEvent.data[0] = value * CONVERT_GYRO_X;
-            } else if (event->code == EVENT_TYPE_GYRO_Y) {
-                mPendingEvent.data[1] = value * CONVERT_GYRO_Y;
-            } else if (event->code == EVENT_TYPE_GYRO_Z) {
-                mPendingEvent.data[2] = value * CONVERT_GYRO_Z;
+            if (event->code == EVENT_TYPE_YAW) {
+                mPendingEvent.orientation.azimuth = value * CONVERT_O_A;
+            } else if (event->code == EVENT_TYPE_PITCH) {
+                mPendingEvent.orientation.pitch = value * CONVERT_O_P;
+            } else if (event->code == EVENT_TYPE_ROLL) {
+                mPendingEvent.orientation.roll = value * CONVERT_O_R;
             }
         } else if (type == EV_SYN) {
             mPendingEvent.timestamp = timevalToNano(event->time);
@@ -160,22 +170,13 @@ again:
                 numEventReceived++;
             }
         } else {
-            LOGE("GyroSensor: unknown event (type=%d, code=%d)",
+            LOGE("OrientationSensor: unknown event (type=%d, code=%d)",
                     type, event->code);
         }
         mInputReader.next();
     }
-
-#if FETCH_FULL_EVENT_BEFORE_RETURN
-    /* if we didn't read a complete event, see if we can fill and
-       try again instead of returning with nothing and redoing poll. */
-    if (numEventReceived == 0 && mEnabled == 1) {
-        n = mInputReader.fill(data_fd);
-        if (n)
-            goto again;
-    }
-#endif
-
-    return numEventReceived;
+ 
+	//LOGD("OrientationSensor::~readEvents() numEventReceived = %d", numEventReceived);
+	return numEventReceived++;
+		
 }
-

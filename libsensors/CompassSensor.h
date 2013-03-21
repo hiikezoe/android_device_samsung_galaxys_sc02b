@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_GYRO_SENSOR_H
-#define ANDROID_GYRO_SENSOR_H
+#ifndef ANDROID_COMPASS_SENSOR_H
+#define ANDROID_COMPASS_SENSOR_H
 
 #include <stdint.h>
 #include <errno.h>
@@ -28,9 +28,10 @@
 
 /*****************************************************************************/
 
+
 struct input_event;
 
-class GyroSensor : public SensorBase {
+class CompassSensor : public SensorBase {
     int mEnabled;
     InputEventCircularReader mInputReader;
     sensors_event_t mPendingEvent;
@@ -38,11 +39,10 @@ class GyroSensor : public SensorBase {
     char input_sysfs_path[PATH_MAX];
     int input_sysfs_path_len;
 
-    int setInitialState();
 
 public:
-            GyroSensor();
-    virtual ~GyroSensor();
+            CompassSensor();
+    virtual ~CompassSensor();
     virtual int readEvents(sensors_event_t* data, int count);
     virtual bool hasPendingEvents() const;
     virtual int setDelay(int32_t handle, int64_t ns);
