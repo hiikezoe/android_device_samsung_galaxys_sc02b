@@ -31,18 +31,18 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_CFLAGS := -DLOG_TAG=\"Sensors\"
 
 ifeq ($(TARGET_DEVICE),captivate)
-	LOCAL_CFLAGS +=  -DCAPTIVATE
+  LOCAL_CFLAGS +=  -DCAPTIVATE
 endif
 
-LOCAL_SRC_FILES := 						\
-				sensors.cpp 			\
-				SensorBase.cpp			\
-				LightSensor.cpp			\
-				ProximitySensor.cpp		\
-				Smb380Sensor.cpp         \
-				CompassSensor.cpp	\
-				OrientationSensor.cpp	\
-	            InputEventReader.cpp
+LOCAL_SRC_FILES :=      \
+  sensors.cpp           \
+  SensorBase.cpp        \
+  LightSensor.cpp       \
+  ProximitySensor.cpp   \
+  Smb380Sensor.cpp      \
+  CompassSensor.cpp     \
+  OrientationSensor.cpp \
+  InputEventReader.cpp
 
 LOCAL_SHARED_LIBRARIES := liblog libcutils libdl
 LOCAL_PRELINK_MODULE := false
