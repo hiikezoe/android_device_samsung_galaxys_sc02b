@@ -45,5 +45,5 @@ $(call inherit-product, device/samsung/galaxys_sc02b/device.mk)
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := full_galaxys_sc02b
 PRODUCT_DEVICE := galaxys_sc02b
-PRODUCT_BRAND := Android
-PRODUCT_MODEL := Full Android on Crespo
+PRODUCT_BRAND := B2G
+PRODUCT_MODEL := B2G on Glaxy S SC-02B
