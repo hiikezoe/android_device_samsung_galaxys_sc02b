@@ -49,5 +49,5 @@ $(call inherit-product, device/samsung/galaxys_sc02b/device_base.mk)
 # half of the device-specific product definition file takes care
 # of the aspects that require proprietary drivers that aren't
 # commonly available
-$(call inherit-product-if-exists, vendor/samsung/crespo/device-vendor.mk)
+$(call inherit-product-if-exists, vendor/samsung/galaxys_sc02b/galaxys_sc02b-vendor.mk)
 

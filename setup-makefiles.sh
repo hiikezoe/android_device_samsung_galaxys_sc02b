@@ -51,6 +51,8 @@ done
 
 \$(call inherit-product, $OUTDIR/$DEVICE-vendor-blobs.mk)
 \$(call inherit-product, vendor/imgtec/crespo/device-crespo.mk)
+\$(call inherit-product, vendor/broadcom/crespo/device-crespo.mk)
+\$(call inherit-product, vendor/akm/crespo/device-crespo.mk)
 EOF
 
 
