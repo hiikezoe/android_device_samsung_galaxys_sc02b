@@ -42,4 +42,4 @@ CSUM_LIST="$PWD/blob-shasums"
 
 cd ../../.. &&
 install_blobs nexus-s "$CRESPO_BLOBS" "$CSUM_LIST"
-find vendor/imgtec/crespo/ -type f | xargs chmod o+rw,g+rw
+find vendor/imgtec/crespo/ -type f | xargs chmod o+r,g+r
