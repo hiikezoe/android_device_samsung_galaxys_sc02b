@@ -11,15 +11,15 @@
   <default revision="refs/tags/android-4.0.4_r1.2" remote="linaro" sync-j="4"/>
 
   <!-- Gonk specific things and forks -->
-  <project path="build" name="platform_build" remote="b2g" revision="193e0e263fd16343188f43e6ce49e6e97b30af1b" upstream="v1-train">
+  <project path="build" name="platform_build" remote="b2g" revision="master">
     <copyfile src="core/root.mk" dest="Makefile"/>
   </project>
-  <project path="dalvik" name="fake-dalvik" remote="b2g" revision="ca1f327d5acc198bb4be62fa51db2c039032c9ce" upstream="v1-train"/>
-  <project path="gaia" name="gaia.git" remote="mozillaorg" revision="v1-train"/>
-  <project path="gecko" name="gecko.git" remote="mozillaorg" revision="gecko-18"/>
-  <project path="gonk-misc" name="gonk-misc" remote="b2g" revision="ded7bc971be7f0543db3e7dcf8e2ff134739aef2" upstream="v1-train"/>
-  <project path="rilproxy" name="rilproxy" remote="b2g" revision="f634b3d50effdd42828cc757c01fdbf74e562a36" upstream="v1-train"/>
-  <project path="external/moztt" name="moztt" remote="b2g" revision="03576daee5298aedfd4a36b1687eeca726f1ed24" upstream="v1-train"/>
+  <project path="dalvik" name="fake-dalvik" remote="b2g" revision="master"/>
+  <project path="gaia" name="gaia.git" remote="mozillaorg" revision="master"/>
+  <project path="gecko" name="gecko.git" remote="mozillaorg" revision="master"/>
+  <project path="gonk-misc" name="gonk-misc" remote="b2g" revision="master"/>
+  <project path="rilproxy" name="rilproxy" remote="b2g" revision="master"/>
+  <project path="external/moztt" name="moztt" remote="b2g" revision="master"/>
 
   <!-- Stock Android things -->
   <project path="abi/cpp" name="platform/abi/cpp" revision="6426040f1be4a844082c9769171ce7f5341a5528"/>
