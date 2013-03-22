@@ -55,7 +55,7 @@ BOARD_NAND_SPARE_SIZE := 128
 BOARD_KERNEL_BASE := 0x32000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_CMDLINE := console=ttyFIQ0 no_console_suspend androidboot.hardware=aries
-TARGET_KERNEL_CONFIG := cyanogenmod_galaxys_sc02b_defconfig
+TARGET_KERNEL_CONFIG := b2g_galaxys_sc02b_defconfig
 TARGET_KERNEL_SOURCE := kernel/samsung/galaxys_sc02b
 INSTALLED_KERNEL_TARGET := $(PRODUCT_OUT)/kernel
 include device/samsung/galaxys_sc02b/kernel.mk
